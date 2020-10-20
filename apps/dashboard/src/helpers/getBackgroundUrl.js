@@ -23,8 +23,11 @@
 import { generateUrl } from '@nextcloud/router'
 import prefixWithBaseUrl from './prefixWithBaseUrl'
 
-export default (background, time = 0) => {
+export default (background, time = 0, override = false) => {
 	if (background === 'default') {
+		if (override) {
+			return generateUrl('/apps/dashboard/default-background') + '?v=' + time
+		}
 		if (window.OCA.Accessibility.theme === 'dark') {
 			return prefixWithBaseUrl('eduardo-neves-pedra-azul.jpg')
 		}

@@ -109,6 +109,8 @@ class DashboardController extends Controller {
 		// It does not matter if some statuses are missing from the array, missing ones are considered enabled
 		$statuses = ($statuses && count($statuses) > 0) ? $statuses : ['weather' => true];
 
+		$overrideDefaultBackground = $this->config->getAppValue('dashboard', 'overrideDefaultBackground', '0') === '1';
+		$this->inititalStateService->provideInitialState('dashboard', 'overrideDefaultBackground', $overrideDefaultBackground);
 		$this->inititalStateService->provideInitialState('dashboard', 'panels', $widgets);
 		$this->inititalStateService->provideInitialState('dashboard', 'statuses', $statuses);
 		$this->inititalStateService->provideInitialState('dashboard', 'layout', $userLayout);
@@ -190,6 +192,20 @@ class DashboardController extends Controller {
 	 */
 	public function getBackground() {
 		$file = $this->backgroundService->getBackground();
+		if ($file !== null) {
+			$response = new FileDisplayResponse($file, Http::STATUS_OK, ['Content-Type' => $file->getMimeType()]);
+			$response->cacheFor(24 * 60 * 60);
+			return $response;
+		}
+		return new NotFoundResponse();
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getDefaultBackground() {
+		$file = $this->backgroundService->getDefaultBackground();
 		if ($file !== null) {
 			$response = new FileDisplayResponse($file, Http::STATUS_OK, ['Content-Type' => $file->getMimeType()]);
 			$response->cacheFor(24 * 60 * 60);

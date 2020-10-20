@@ -110,6 +110,10 @@ class BackgroundService {
 	 */
 	private $dashboardUserFolder;
 	/**
+	 * @var \OCP\Files\SimpleFS\ISimpleFolder
+	 */
+	private $dashboardAppFolder;
+	/**
 	 * @var IConfig
 	 */
 	private $config;
@@ -124,6 +128,11 @@ class BackgroundService {
 			$this->dashboardUserFolder = $appData->getFolder($userId);
 		} catch (NotFoundException $e) {
 			$this->dashboardUserFolder = $appData->newFolder($userId);
+		}
+		try {
+			$this->dashboardAppFolder = $appData->getFolder('default');
+		} catch (NotFoundException $e) {
+			$this->dashboardAppFolder = $appData->newFolder('default');
 		}
 		$this->config = $config;
 		$this->userId = $userId;
@@ -165,6 +174,17 @@ class BackgroundService {
 		if ($background === 'custom') {
 			try {
 				return $this->dashboardUserFolder->getFile('background.jpg');
+			} catch (NotFoundException $e) {
+			}
+		}
+		return null;
+	}
+
+	public function getDefaultBackground(): ?ISimpleFile {
+		$background = $this->config->getUserValue($this->userId, 'dashboard', 'background', 'default');
+		if ($background === 'default') {
+			try {
+				return $this->dashboardAppFolder->getFile('default.jpg');
 			} catch (NotFoundException $e) {
 			}
 		}

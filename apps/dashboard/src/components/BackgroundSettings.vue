@@ -66,6 +66,10 @@ export default {
 			type: String,
 			default: 'default',
 		},
+		overrideDefaultBackground: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -88,7 +92,7 @@ export default {
 	methods: {
 		async update(data) {
 			const background = data.type === 'custom' || data.type === 'default' ? data.type : data.value
-			this.backgroundImage = getBackgroundUrl(background, data.version)
+			this.backgroundImage = getBackgroundUrl(background, data.version, this.overrideDefaultBackground)
 			if (data.type === 'color') {
 				this.$emit('update:background', data)
 				this.loading = false
