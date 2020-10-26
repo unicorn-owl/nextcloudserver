@@ -242,7 +242,7 @@ class OfflineUser {
 	 */
 	protected function determineShares() {
 		$query = $this->db->prepare('
-			SELECT COUNT(`uid_owner`)
+			SELECT `uid_owner`
 			FROM `*PREFIX*share`
 			WHERE `uid_owner` = ?
 		', 1);
@@ -254,7 +254,7 @@ class OfflineUser {
 		}
 
 		$query = $this->db->prepare('
-			SELECT COUNT(`owner`)
+			SELECT `owner`
 			FROM `*PREFIX*share_external`
 			WHERE `owner` = ?
 		', 1);
